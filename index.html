@@ -1,73 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ضع صورتك داخل الإطار</title>
-
-  <style>
+<meta charset="UTF-8">
+<title>ضع صورتك داخل الإطار</title>
+<style>
     body{
-      font-family: Tahoma, Arial;
-      direction: rtl;
-      text-align:center;
-      background:#eee;
-      padding:30px;
+        text-align:center;
+        font-family:tahoma;
+        background:#eee;
     }
-    #container{ position:relative; display:inline-block; }
+    #frame_box{
+        width:350px;
+        height:350px;
+        margin:auto;
+        position:relative;
+    }
+    #user_img{
+        width:290px;
+        height:290px;
+        position:absolute;
+        top:30px; 
+        left:30px;
+        object-fit:cover;
+        border-radius:10px;
+        display:none;
+    }
     #frame{
-      width:700px; /* حجم الصورة */
-      display:block;
+        width:350px;
+        height:350px;
+        position:absolute;
+        top:0;
+        left:0;
+        pointer-events:none;
     }
-    #userImage{
-      position:absolute;
-      left:400px;    /* قيمة تحديد مكان المربع من اليسار */
-      top:170px;     /* قيمة تحديد مكان المربع من الأعلى */
-      width:230px;   /* عرض المربع */
-      height:280px;  /* ارتفاع المربع */
-      object-fit:cover;
-      border-radius:4px;
-    }
-  </style>
+</style>
 </head>
-
 <body>
-<h2>ارفع صورتك لتظهر داخل المربع</h2>
 
-<div id="container">
-  <!-- ✔ هذا هو رابط الصورة الحقيقي الآن -->
-  <img id="frame" src="https://i.ibb.co/39p3yFGx" alt="frame">
-  <img id="userImage" alt="">
+<h2>📤 ارفع صورتك لتظهر داخل الإطار</h2>
+
+<input type="file" id="upload" accept="image/*"><br><br>
+
+<div id="frame_box">
+    <img id="user_img">
+    <img id="frame" src="كبير.jpg">
 </div>
 
-<br><br>
-
-<input type="file" id="upload" accept="image/*">
-<button onclick="downloadFinal()">📥 دمج وحفظ الصورة</button>
-
 <script>
-document.getElementById("upload").onchange = function(e){
-  const file = e.target.files[0];
-  if(file){
-    document.getElementById("userImage").src = URL.createObjectURL(file);
-  }
-}
+let input = document.getElementById("upload"),
+    userImg = document.getElementById("user_img");
 
-function downloadFinal(){
-  const frame = document.getElementById("frame");
-  const user  = document.getElementById("userImage");
-
-  const canvas = document.createElement("canvas");
-  canvas.width  = frame.width;
-  canvas.height = frame.height;
-  const ctx = canvas.getContext("2d");
-
-  ctx.drawImage(frame,0,0,canvas.width,canvas.height);
-  ctx.drawImage(user,400,170,230,280); // نفس أرقام المربع بالأعلى
-
-  const link = document.createElement("a");
-  link.download = "final.png";
-  link.href = canvas.toDataURL();
-  link.click();
+input.onchange = e=>{
+    let file = e.target.files[0];
+    userImg.src = URL.createObjectURL(file);
+    userImg.style.display="block";
 }
 </script>
 
