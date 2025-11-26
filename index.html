@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ضع صورتك داخل الإطار</title>
+
+  <style>
+    body{
+      font-family: Tahoma, Arial;
+      direction: rtl;
+      text-align:center;
+      background:#eee;
+      padding:30px;
+    }
+    #container{ position:relative; display:inline-block; }
+    #frame{
+      width:700px; /* حجم الصورة */
+      display:block;
+    }
+    #userImage{
+      position:absolute;
+      left:400px;    /* قيمة تحديد مكان المربع من اليسار */
+      top:170px;     /* قيمة تحديد مكان المربع من الأعلى */
+      width:230px;   /* عرض المربع */
+      height:280px;  /* ارتفاع المربع */
+      object-fit:cover;
+      border-radius:4px;
+    }
+  </style>
+</head>
+
+<body>
+<h2>ارفع صورتك لتظهر داخل المربع</h2>
+
+<div id="container">
+  <!-- ✔ هذا هو رابط الصورة الحقيقي الآن -->
+  <img id="frame" src="https://i.ibb.co/39p3yFGx" alt="frame">
+  <img id="userImage" alt="">
+</div>
+
+<br><br>
+
+<input type="file" id="upload" accept="image/*">
+<button onclick="downloadFinal()">📥 دمج وحفظ الصورة</button>
+
+<script>
+document.getElementById("upload").onchange = function(e){
+  const file = e.target.files[0];
+  if(file){
+    document.getElementById("userImage").src = URL.createObjectURL(file);
+  }
+}
+
+function downloadFinal(){
+  const frame = document.getElementById("frame");
+  const user  = document.getElementById("userImage");
+
+  const canvas = document.createElement("canvas");
+  canvas.width  = frame.width;
+  canvas.height = frame.height;
+  const ctx = canvas.getContext("2d");
+
+  ctx.drawImage(frame,0,0,canvas.width,canvas.height);
+  ctx.drawImage(user,400,170,230,280); // نفس أرقام المربع بالأعلى
+
+  const link = document.createElement("a");
+  link.download = "final.png";
+  link.href = canvas.toDataURL();
+  link.click();
+}
+</script>
+
+</body>
+</html>
