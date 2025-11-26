@@ -2,59 +2,96 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>ضع صورتك داخل الإطار</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دمج صورتك داخل الإطار</title>
+
 <style>
-    body{
-        text-align:center;
-        font-family:tahoma;
-        background:#eee;
-    }
-    #frame_box{
-        width:350px;
-        height:350px;
-        margin:auto;
-        position:relative;
-    }
-    #user_img{
-        width:290px;
-        height:290px;
-        position:absolute;
-        top:30px; 
-        left:30px;
-        object-fit:cover;
-        border-radius:10px;
-        display:none;
-    }
-    #frame{
-        width:350px;
-        height:350px;
-        position:absolute;
-        top:0;
-        left:0;
-        pointer-events:none;
-    }
+body{
+    font-family: Tahoma;
+    direction: rtl;
+    text-align: center;
+    background: #eee;
+    padding: 20px;
+}
+
+/* حجم الإطار الرئيسي */
+#frame-box{
+    width: 450px;
+    margin: auto;
+    position: relative;
+}
+
+#frame{
+    width: 100%;
+    display: block;
+}
+
+/* 📍 مكان وقياس إدراج صورة المستخدم داخل الإطار */
+#user-img{
+    position:absolute;
+    left: 245px; /* الضبط الأفقي */
+    top: 160px;  /* الضبط الرأسي */
+    width: 155px;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 3px;
+    display:none;
+}
+
+button,input{
+    padding:10px 15px;
+    margin-top:10px;
+    border:0;
+    background:#007bff;
+    color:#fff;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+#download{background:#28a745}
 </style>
 </head>
+
 <body>
 
-<h2>📤 ارفع صورتك لتظهر داخل الإطار</h2>
+<h2>📸 ارفع صورتك لتظهر داخل الإطار</h2>
 
-<input type="file" id="upload" accept="image/*"><br><br>
+<input type="file" id="upload" accept="image/*"><br>
+<button id="download" style="display:none">⬇ تنزيل الصورة</button>
+<button onclick="navigator.clipboard.writeText(location.href)">🔗 نسخ رابط المشاركة</button>
 
-<div id="frame_box">
-    <img id="user_img">
-    <img id="frame" src="كبير.jpg">
+<div id="frame-box">
+    <img id="user-img">
+    <img id="frame" src="كبير.jpg">   <!-- ضع اسم الصورة كما رفعته -->
 </div>
 
-<script>
-let input = document.getElementById("upload"),
-    userImg = document.getElementById("user_img");
+<canvas id="canvas" width="450" height="720" style="display:none"></canvas>
 
-input.onchange = e=>{
+<script>
+
+upload.onchange = e =>{
     let file = e.target.files[0];
-    userImg.src = URL.createObjectURL(file);
-    userImg.style.display="block";
+    if(!file) return;
+    user-img.src = URL.createObjectURL(file);
+    user-img.style.display="block";
+    download.style.display="inline-block";
 }
+
+download.onclick=()=>{
+    let c=document.getElementById("canvas"),
+        ctx=c.getContext("2d"),
+        frame=document.getElementById("frame"),
+        user=document.getElementById("user-img");
+
+    ctx.drawImage(frame,0,0,450,720);
+    ctx.drawImage(user,245,160,155,190);
+
+    let a=document.createElement("a");
+    a.download="final.png";
+    a.href=c.toDataURL();
+    a.click();
+}
+
 </script>
 
 </body>
