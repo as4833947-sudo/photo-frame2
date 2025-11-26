@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ضع صورتك داخل الإطار</title>
+<title>دمج صورتك داخل الإطار</title>
 
 <style>
 body{
@@ -18,14 +18,12 @@ body{
 }
 #userImg{
     position:absolute;
-    top:120px; /* يمكنك تعديل مكان الصورة */
+    top:120px;
     left:175px;
     width:165px;
     height:210px;
     object-fit:cover;
     border-radius:5px;
-}
-#finalCanvas{
     display:none;
 }
 button{
@@ -38,6 +36,9 @@ button{
     border-radius:6px;
     cursor:pointer;
 }
+#downloadBtn{
+    background:#28a745;
+}
 </style>
 </head>
 
@@ -45,49 +46,50 @@ button{
 
 <h2>📸 ارفع صورتك لتظهر داخل الإطار</h2>
 
-<input type="file" id="upload" accept="image/*">
-<br><br>
+<input type="file" id="upload" accept="image/*"><br><br>
 
 <div class="frame-container">
     <img src="كبير.jpg" width="350">
     <img id="userImg">
 </div>
 
-<canvas id="finalCanvas" width="350" height="600"></canvas>
-<br>
+<canvas id="canvas" width="350" height="600" style="display:none"></canvas><br>
 
-<button id="downloadBtn" style="display:none;" onclick="downloadFinal()">⬇ تحميل الصورة</button>
+<button id="downloadBtn" style="display:none">⬇ تحميل الصورة</button>
 
 <script>
 const upload=document.getElementById("upload");
 const userImg=document.getElementById("userImg");
-const download=document.getElementById("downloadBtn");
-const canvas=document.getElementById("finalCanvas");
+const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
+const download=document.getElementById("downloadBtn");
+const frame=new Image();
+frame.src="كبير.jpg";
 
-upload.onchange = (e)=>{
-    let file = e.target.files[0];
-    userImg.src = URL.createObjectURL(file);
-    userImg.onload=makeFinal;
+upload.onchange=(e)=>{
+    let file=e.target.files[0];
+    if(!file) return;
+    
+    userImg.src=URL.createObjectURL(file);
+    userImg.style.display="block";
+
+    userImg.onload=()=>{ drawFinal(); };
 };
 
-function makeFinal(){
-    const frame = new Image();
-    frame.src="كبير.jpg";
+function drawFinal(){
+    ctx.clearRect(0,0,canvas.width,canvas.height); // 🔥 السماح بتكرار المحاولات
+    ctx.drawImage(frame,0,0,350,600);
+    ctx.drawImage(userImg,175,120,165,210);
 
-    frame.onload = ()=>{
-        ctx.drawImage(frame,0,0,350,600);
-        ctx.drawImage(userImg,175,120,165,210); // مكان دمج الصورة
-        download.style.display="inline-block";
-    };
+    download.style.display="inline-block"; // إظهار زر التحميل
 }
 
-function downloadFinal(){
+download.onclick=()=>{
     let link=document.createElement("a");
+    link.href=canvas.toDataURL("image/png");
     link.download="صورتك داخل الإطار.png";
-    link.href=canvas.toDataURL();
     link.click();
-}
+};
 </script>
 
 </body>
